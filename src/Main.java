@@ -12,24 +12,12 @@ public class Main {
         System.out.print("Digite o valor: ");
         double valor = scanner.nextDouble();
 
-        PaymentStrategy paymentStrategy = null;
-
-        switch (choice) {
-            case 1:
-                paymentStrategy = new PixPayment();
-                break;
-            case 2:
-                paymentStrategy = new CreditCardPayment();
-                break;
-            case 3:
-                paymentStrategy = new BoletoPayment();
-                break;
-            default:
-                System.out.println("Escolha invalidá.");
-                System.exit(0);
+        try {
+            PaymentStrategy paymentStrategy = PaymentFactory.createPaymentStrategy(choice);
+            PaymentProcessor processor = new PaymentProcessor(paymentStrategy);
+            processor.process(valor);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-
-        PaymentProcessor processor = new PaymentProcessor(paymentStrategy);
-        processor.process(valor);
     }
 }
